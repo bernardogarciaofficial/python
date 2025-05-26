@@ -7,13 +7,29 @@
 </head>
 <body>
   <div class="container">
-    <video id="video" controls autoplay muted></video>
+
+    <!-- Upload Song Button -->
+    <div class="upload-section">
+      <label for="songInput" class="upload-label">Upload Song</label>
+      <input type="file" id="songInput" accept="audio/*">
+    </div>
+
+    <!-- Song Waveform Visual -->
+    <div id="waveform-container">
+      <canvas id="waveform"></canvas>
+      <div id="barChunks"></div>
+    </div>
+
+    <!-- Controls below waveform -->
     <div class="controls">
-      <button id="recordBtn">Record</button>
+      <button id="recordBtn" disabled>Record</button>
       <button id="playBtn" disabled>Play</button>
       <button id="stopBtn" disabled>Stop</button>
       <span id="recIndicator" class="hidden">● REC</span>
     </div>
+
+    <!-- Video screen (slave to audio) -->
+    <video id="video" controls autoplay muted class="video-slave"></video>
   </div>
   <script src="script.js"></script>
 </body>
