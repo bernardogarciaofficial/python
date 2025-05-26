@@ -15,17 +15,13 @@ let isRecording = false;
 
 let audioContext = null;
 let audioBuffer = null;
-let songSource = null;
 let audio = null;
 let songUrl = null;
 let bars = [];
-let barDurations = [];
-let currentBar = 0;
 let barCount = 8;
-let songDuration = 0;
+let rafId = null;
 let isSongLoaded = false;
 let isSongPlaying = false;
-let rafId = null;
 
 // ---- Song Upload and Waveform ---- //
 songInput.addEventListener('change', async (e) => {
@@ -37,8 +33,6 @@ songInput.addEventListener('change', async (e) => {
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   const arrayBuffer = await file.arrayBuffer();
   audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-  songDuration = audioBuffer.duration;
 
   // Build waveform
   drawWaveform(audioBuffer);
@@ -55,8 +49,8 @@ songInput.addEventListener('change', async (e) => {
 
   // Enable controls
   recordBtn.disabled = false;
-  playBtn.disabled = false;
-  stopBtn.disabled = false;
+  playBtn.disabled = true;
+  stopBtn.disabled = true;
   isSongLoaded = true;
 });
 
@@ -91,7 +85,6 @@ function drawWaveform(buffer) {
 // Divide song into bars
 function divideIntoBars(buffer, barCount) {
   bars = [];
-  barDurations = [];
   const duration = buffer.duration;
   const barLen = duration / barCount;
   barChunks.innerHTML = '';
@@ -100,7 +93,6 @@ function divideIntoBars(buffer, barCount) {
       start: i * barLen,
       end: (i + 1) * barLen
     });
-    barDurations.push(barLen);
     // Visual chunk division
     const barDiv = document.createElement('div');
     barDiv.className = 'bar-chunk';
@@ -130,6 +122,9 @@ recordBtn.addEventListener('click', async () => {
       audio.play();
       isSongPlaying = true;
       syncVideoToAudio();
+      playBtn.disabled = true;
+      stopBtn.disabled = false;
+      recordBtn.disabled = true;
     }
   } catch (err) {
     alert("Could not access camera. Make sure you use HTTPS and allow camera access.");
@@ -140,9 +135,6 @@ function startRecording() {
   isRecording = true;
   recordedChunks = [];
   recordedVideoBlob = null;
-  playBtn.disabled = true;
-  stopBtn.disabled = false;
-  recordBtn.disabled = true;
 
   mediaRecorder = new MediaRecorder(mediaStream, { mimeType: 'video/webm' });
   mediaRecorder.ondataavailable = (e) => {
@@ -168,6 +160,7 @@ function startRecording() {
     if (audio) {
       audio.pause();
       isSongPlaying = false;
+      audio.currentTime = 0;
     }
     cancelAnimationFrame(rafId);
   };
@@ -190,6 +183,9 @@ stopBtn.addEventListener('click', () => {
     video.currentTime = 0;
   }
   cancelAnimationFrame(rafId);
+  playBtn.disabled = false;
+  recordBtn.disabled = false;
+  stopBtn.disabled = true;
 });
 
 // Play both audio and recorded video in sync
@@ -219,6 +215,9 @@ playBtn.addEventListener('click', () => {
       isSongPlaying = false;
       cancelAnimationFrame(rafId);
     };
+    stopBtn.disabled = false;
+    playBtn.disabled = true;
+    recordBtn.disabled = false;
   }
 });
 
