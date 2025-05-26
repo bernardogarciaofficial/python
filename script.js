@@ -127,7 +127,15 @@ recordBtn.addEventListener('click', async () => {
       recordBtn.disabled = true;
     }
   } catch (err) {
-    alert("Could not access camera. Make sure you use HTTPS and allow camera access.");
+    if (window.isSecureContext === false) {
+      alert("Camera access requires HTTPS or localhost. Please serve your site securely.");
+    } else if (err && err.name === "NotAllowedError") {
+      alert("Camera permission denied. Please allow camera access in your browser settings.");
+    } else if (err && err.name === "NotFoundError") {
+      alert("No camera found on this device.");
+    } else {
+      alert("Could not access camera. Error: " + err.message);
+    }
   }
 });
 
