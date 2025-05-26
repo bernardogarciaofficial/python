@@ -1,15 +1,45 @@
 .container {
-  max-width: 400px;
+  max-width: 500px;
   margin: 30px auto;
   text-align: center;
 }
-video {
+.upload-section {
+  margin-bottom: 16px;
+}
+.upload-label {
+  font-weight: bold;
+  margin-right: 8px;
+}
+#waveform-container {
   width: 100%;
-  height: auto;
-  background: #222;
+  max-width: 500px;
+  margin: 0 auto 20px auto;
+  position: relative;
+}
+#waveform {
+  width: 100%;
+  height: 80px;
+  background: #111;
+  display: block;
+  border-radius: 6px;
+}
+#barChunks {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: 0; left: 0; height: 100%; pointer-events: none;
+}
+.bar-chunk {
+  flex: 1;
+  border-left: 2px dashed #fff2;
+  height: 100%;
+}
+.bar-chunk:first-child {
+  border-left: none;
 }
 .controls {
-  margin-top: 10px;
+  margin-top: 16px;
 }
 button {
   margin: 0 5px;
@@ -28,4 +58,11 @@ button {
   0% { opacity: 1; }
   50% { opacity: 0.1; }
   100% { opacity: 1; }
+}
+.video-slave {
+  width: 100%;
+  height: auto;
+  background: #222;
+  margin-top: 20px;
+  border-radius: 6px;
 }
